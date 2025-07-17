@@ -1,6 +1,10 @@
 // This file will be used to patch the rollup native module issue
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 try {
   const nativePath = path.resolve('./node_modules/rollup/dist/native.js');
