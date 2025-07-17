@@ -7,17 +7,18 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 try {
+  // Create a complete replacement for the native.js file
   const nativePath = path.resolve('./node_modules/rollup/dist/native.js');
   if (fs.existsSync(nativePath)) {
-    let content = fs.readFileSync(nativePath, 'utf8');
+    const replacementContent = `
+// Patched version that completely disables native addons
+export const getDefaultExecOptions = () => ({});
+export const installNativePlugins = () => {};
+export const loadNativePlugins = () => {};
+export const setNativePluginPromise = () => {};
+`;
     
-    // Replace the problematic code with a simple return
-    content = content.replace(
-      /function requireWithFriendlyError[\s\S]*?return require\(id\);/m,
-      'function requireWithFriendlyError(id) { return null; }'
-    );
-    
-    fs.writeFileSync(nativePath, content);
+    fs.writeFileSync(nativePath, replacementContent);
     console.log('Successfully patched rollup native module');
   }
 } catch (error) {
