@@ -1,0 +1,6 @@
+[build]
+  command = "npm --workspace upsc-guide-landing-page run build"
+  publish = "Frontend/dist"
+
+[build.environment]
+  NODE_VERSION = "18"
