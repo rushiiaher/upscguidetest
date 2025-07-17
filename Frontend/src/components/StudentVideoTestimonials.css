@@ -1,0 +1,98 @@
+/* StudentVideoTestimonials.css */
+
+/* Card styling */
+.video-testimonial-card {
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.video-testimonial-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.video-play-button {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 0.3s ease;
+}
+
+.video-testimonial-card:hover .video-play-button {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.video-overlay {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 50%);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.video-testimonial-quote {
+  position: relative;
+}
+
+.video-testimonial-quote::before {
+  content: '"';
+  font-size: 3rem;
+  position: absolute;
+  top: -1.5rem;
+  left: -1rem;
+  opacity: 0.2;
+  color: #f97316;
+}
+
+.video-testimonial-quote::after {
+  content: '"';
+  font-size: 3rem;
+  position: absolute;
+  bottom: -2.5rem;
+  right: -1rem;
+  opacity: 0.2;
+  color: #f97316;
+}
+
+/* Pagination styling */
+.pagination-dot {
+  transition: all 0.3s ease;
+}
+
+.pagination-dot.active {
+  transform: scale(1.3);
+}
+
+/* Navigation arrows */
+.nav-arrow {
+  transition: all 0.2s ease;
+  opacity: 0.7;
+}
+
+.nav-arrow:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Video container */
+.video-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.video-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 70%, rgba(0, 0, 0, 0.4) 100%);
+  pointer-events: none;
+}
+
+/* Section styling */
+.testimonials-section {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}

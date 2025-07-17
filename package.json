@@ -1,0 +1,19 @@
+{
+  "name": "upsc-guide",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "Frontend",
+    "Backend"
+  ],
+  "scripts": {
+    "install:frontend": "cd Frontend && npm install",
+    "install:backend": "cd Backend && npm install",
+    "build:frontend": "cd Frontend && npm run build",
+    "build:backend": "cd Backend && npm install",
+    "start:frontend": "cd Frontend && npm start",
+    "start:backend": "cd Backend && npm start",
+    "dev:frontend": "cd Frontend && npm run dev",
+    "dev:backend": "cd Backend && npm run dev"
+  }
+}
