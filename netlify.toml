@@ -1,6 +1,7 @@
 [build]
-  command = "cd Frontend && npm install cross-env --no-save && npm run build"
-  publish = "Frontend/dist"
+  base = "Frontend"
+  command = "npm ci && node netlify-build.js"
+  publish = "dist"
 
 [build.environment]
   NODE_VERSION = "18"
