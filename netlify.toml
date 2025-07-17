@@ -1,6 +1,7 @@
 [build]
-  command = "npm --workspace upsc-guide-landing-page run build"
+  command = "cd Frontend && npm install cross-env --no-save && npm run build"
   publish = "Frontend/dist"
 
 [build.environment]
   NODE_VERSION = "18"
+  ROLLUP_SKIP_LOAD_NATIVE_PLUGIN = "true"

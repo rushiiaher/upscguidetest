@@ -5,9 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "build:windows": "tsc && vite build",
-    "build:unix": "tsc && ROLLUP_SKIP_LOAD_NATIVE_PLUGIN=true vite build",
+    "build": "cross-env ROLLUP_SKIP_LOAD_NATIVE_PLUGIN=true tsc && cross-env ROLLUP_SKIP_LOAD_NATIVE_PLUGIN=true vite build",
     "render-build": "npm install --force && npm run build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
@@ -69,6 +67,7 @@
     "@typescript-eslint/parser": "^6.14.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.17",
+    "cross-env": "^7.0.3",
     "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
