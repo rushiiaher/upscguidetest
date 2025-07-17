@@ -28,7 +28,7 @@ const ContactForm = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(process.env.NEXT_PUBLIC_API_URL || 'https://upsc-guide-backend.vercel.app/api/contact', {
+      const response = await fetch(import.meta.env.VITE_API_URL + '/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
