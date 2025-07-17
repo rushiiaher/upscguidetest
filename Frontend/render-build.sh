@@ -1,5 +1,6 @@
-#!/bin/bash
-# Fix for Rollup issue on Render
-npm install --force
-export ROLLUP_SKIP_LOAD_NATIVE_PLUGIN=true
+#!/usr/bin/env sh
+# exit on error
+set -o errexit
+
+npm install
 npm run build
