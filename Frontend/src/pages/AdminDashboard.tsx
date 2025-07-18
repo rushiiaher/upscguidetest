@@ -41,7 +41,9 @@ const AdminDashboard = () => {
   const fetchContacts = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/admin/contacts', {
+      // Use the global ENV variable for API URL
+      const apiUrl = window.ENV?.VITE_API_URL || 'https://upscguidetest.onrender.com';
+      const response = await fetch(`${apiUrl}/api/admin/contacts`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminAuth')}`
         }
