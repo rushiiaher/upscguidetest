@@ -1,7 +1,7 @@
 [build]
   base = "Frontend"
   publish = "dist"
-  command = "node patch-rollup.cjs && ROLLUP_SKIP_LOAD_NATIVE_PLUGIN=true npm run build"
+  command = "npm run build"
 
 [[redirects]]
   from = "/*"
@@ -10,3 +10,4 @@
 
 [build.environment]
   ROLLUP_SKIP_LOAD_NATIVE_PLUGIN = "true"
+  NODE_VERSION = "16"
