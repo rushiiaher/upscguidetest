@@ -8,18 +8,18 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
-    proxy: {
+    // This proxy only works during development
+    proxy: mode === 'development' ? {
       '/api': {
-        target: 'http://localhost:5000',
+        target: 'https://upscguidetest.onrender.com',
         changeOrigin: true,
         secure: false,
       },
-    },
+    } : undefined,
   },
   plugins: [
     react(),
-    mode === 'development' &&
-    componentTagger(),
+    mode === 'development' && componentTagger(),
   ].filter(Boolean),
   resolve: {
     alias: {
