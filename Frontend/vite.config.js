@@ -14,6 +14,14 @@ export default defineConfig({
     rollupOptions: {
       // Disable native plugins
       context: 'globalThis',
-    }
+      // Explicitly disable native plugins
+      plugins: []
+    },
+    // Ensure we're not using native modules
+    target: 'es2015'
+  },
+  optimizeDeps: {
+    // Disable native dependencies
+    exclude: ['@rollup/rollup-linux-x64-gnu']
   }
 });
