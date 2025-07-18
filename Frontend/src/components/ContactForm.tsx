@@ -28,8 +28,9 @@ const ContactForm = () => {
     setIsSubmitting(true);
 
     try {
-      // Use the full Render URL directly if VITE_API_URL is not available
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://upscguidetest.onrender.com';
+      // Use the global ENV variable that's set in main.tsx
+      const apiUrl = window.ENV?.VITE_API_URL || 'https://upscguidetest.onrender.com';
+      console.log('Submitting to:', apiUrl);
       const response = await fetch(`${apiUrl}/api/contact`, {
         method: 'POST',
         headers: {

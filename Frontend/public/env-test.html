@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Environment Test</title>
+</head>
+<body>
+  <h1>Environment Variable Test</h1>
+  <div id="result">Loading...</div>
+
+  <script>
+    // This script will run after the page loads
+    window.onload = function() {
+      const resultDiv = document.getElementById('result');
+      
+      // Check if the environment variable is available
+      if (window.ENV && window.ENV.VITE_API_URL) {
+        resultDiv.innerHTML = `VITE_API_URL: ${window.ENV.VITE_API_URL}`;
+      } else {
+        resultDiv.innerHTML = 'Environment variable VITE_API_URL not found';
+      }
+    };
+  </script>
+</body>
+</html>
