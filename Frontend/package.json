@@ -4,8 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "predev": "node fix-rollup.cjs",
     "dev": "vite",
     "build": "node build-script.cjs",
+    "prebuild:local": "node fix-rollup.cjs",
     "build:local": "vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
@@ -45,7 +47,7 @@
     "cmdk": "^0.2.0",
     "date-fns": "^3.3.1",
     "embla-carousel-react": "^8.0.0-rc19",
-    "lovable-tagger": "^1.1.8",
+    "exceljs": "^4.4.0",
     "lucide-react": "^0.323.0",
     "next-themes": "^0.2.1",
     "react": "^18.2.0",
@@ -56,8 +58,7 @@
     "sonner": "^1.4.0",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
-    "vaul": "^0.8.0",
-    "xlsx": "^0.18.5"
+    "vaul": "^0.8.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.16",
@@ -69,17 +70,18 @@
     "autoprefixer": "^10.4.17",
     "cross-env": "^7.0.3",
     "cross-spawn": "^7.0.3",
-    "path-key": "^3.1.1",
-    "shebang-command": "^2.0.0",
-    "shebang-regex": "^3.0.0",
-    "which": "^2.0.2",
-    "isexe": "^2.0.0",
+    "esbuild": "^0.25.6",
     "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
+    "isexe": "^2.0.0",
+    "path-key": "^3.1.1",
     "postcss": "^8.4.33",
+    "shebang-command": "^2.0.0",
+    "shebang-regex": "^3.0.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.2.2",
-    "vite": "^5.0.8"
+    "vite": "^4.5.2",
+    "which": "^2.0.2"
   }
 }

@@ -40,7 +40,7 @@ exports.setNativePluginPromise = () => {};
 const viteConfigPath = path.resolve('./vite.config.js');
 const viteConfigContent = `
 export default {
-  plugins: [require('@vitejs/plugin-react')()],
+  plugins: [await import('@vitejs/plugin-react').then(m => m.default())],
   resolve: {
     alias: {
       '@': '${path.resolve('./src').replace(/\\/g, '\\\\')}',
