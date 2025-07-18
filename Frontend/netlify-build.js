@@ -1,5 +1,5 @@
 // netlify-build.js
-const fs = require('fs');
+import fs from 'fs';
 
 // Create a production env file with the Render URL
 fs.writeFileSync('./dist/.env', `VITE_API_URL=https://upscguidetest.onrender.com`);
