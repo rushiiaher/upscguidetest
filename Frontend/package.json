@@ -9,6 +9,7 @@
     "build": "node build-script.cjs",
     "prebuild:local": "node fix-rollup.cjs",
     "build:local": "vite build",
+    "build:netlify": "vite build && node netlify-build.js",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },

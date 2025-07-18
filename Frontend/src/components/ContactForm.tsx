@@ -28,7 +28,9 @@ const ContactForm = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(import.meta.env.VITE_API_URL + '/api/contact', {
+      // Use the full Render URL directly if VITE_API_URL is not available
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://upscguidetest.onrender.com';
+      const response = await fetch(`${apiUrl}/api/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
