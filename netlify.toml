@@ -1,8 +1,0 @@
-[build]
-  base = "Frontend"
-  command = "npm ci && node netlify-build.js"
-  publish = "dist"
-
-[build.environment]
-  NODE_VERSION = "18"
-  ROLLUP_SKIP_LOAD_NATIVE_PLUGIN = "true"

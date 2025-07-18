@@ -9,7 +9,7 @@
   "scripts": {
     "install:frontend": "cd Frontend && npm install",
     "install:backend": "cd Backend && npm install",
-    "build:frontend": "cd Frontend && npm run build",
+    "build:frontend": "cd Frontend && npm install && npm run build",
     "build:backend": "cd Backend && npm install",
     "start:frontend": "cd Frontend && npm start",
     "start:backend": "cd Backend && npm start",
