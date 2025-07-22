@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { Star, Trophy, Wifi, NotebookPen, SearchCheck, Users, Award, Target, ArrowRight, CheckCircle, Phone, Globe, MapPin, Play } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { AnimatedStarIcon, AnimatedTrophyIcon, AnimatedWifiIcon, AnimatedNotebookPenIcon, AnimatedSearchCheckIcon, AnimatedUsersIcon, AnimatedAwardIcon, AnimatedTargetIcon, AnimatedArrowRightIcon, AnimatedCheckCircleIcon, AnimatedPhoneIcon, AnimatedGlobeIcon, AnimatedMapPinIcon, AnimatedPlayIcon } from './icons/AnimatedIcons';
 import { Button } from '@/components/ui/button';
+import { GlowButton } from '@/components/ui/glow-button';
+import TextShine from '@/components/ui/text-shine';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,54 +12,108 @@ import { toast } from 'sonner';
 const Hero = () => {
   const [formData, setFormData] = useState({
     name: '',
-    mobile: '',
     email: '',
-    preparationYears: '',
-    message: ''
+    mobile: '',
+    aspirantType: '',
+    attemptedPrelims: '',
+    currentCity: ''
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isScrollEffect, setIsScrollEffect] = useState(false);
+  const heroRef = useRef<HTMLElement>(null);
+  
+  useEffect(() => {
+    let scrollTimer: ReturnType<typeof setTimeout>;
+    let isAnimating = false;
+    
+    const handleScroll = () => {
+      if (!heroRef.current || isAnimating) return;
+      
+      const heroRect = heroRef.current.getBoundingClientRect();
+      const isVisible = heroRect.top < window.innerHeight && heroRect.bottom >= 0;
+      const scrollPercentage = 1 - (heroRect.top / window.innerHeight);
+      
+      // Only trigger when hero section is prominently visible (30% to 80% in view)
+      if (isVisible && scrollPercentage > 0.3 && scrollPercentage < 0.8) {
+        isAnimating = true;
+        setIsScrollEffect(true);
+        
+        // Clear any existing timer
+        clearTimeout(scrollTimer);
+        
+        // Set a new timer to remove the effect
+        scrollTimer = setTimeout(() => {
+          setIsScrollEffect(false);
+          isAnimating = false;
+        }, 2500); // Match animation duration
+      }
+    };
+    
+    // Throttle scroll event for better performance
+    let lastScrollTime = 0;
+    const throttledScroll = () => {
+      const now = Date.now();
+      if (now - lastScrollTime > 200) { // Throttle to once every 200ms
+        lastScrollTime = now;
+        handleScroll();
+      }
+    };
+    
+    window.addEventListener('scroll', throttledScroll);
+    return () => {
+      window.removeEventListener('scroll', throttledScroll);
+      clearTimeout(scrollTimer);
+    };
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSelectChange = (value: string) => {
-    setFormData(prev => ({ ...prev, preparationYears: value }));
+  const handleSelectChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Basic validation
-    if (!formData.name || !formData.mobile || !formData.email) {
+    // Create submission data with default values for required fields
+    const submissionData = {
+      fullName: formData.name || '',
+      email: formData.email || '',
+      mobile: formData.mobile || '',
+      aspirantType: formData.aspirantType || 'full-time', // Default value
+      attemptedPrelims: formData.attemptedPrelims || 'no', // Default value
+      currentCity: formData.currentCity || ''
+    };
+
+    // Basic validation for required fields
+    if (!submissionData.fullName || !submissionData.email || !submissionData.mobile || !submissionData.currentCity) {
       toast.error('Please fill in all required fields');
       setIsSubmitting(false);
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/contact', {
+      console.log('Submitting data:', submissionData);
+      const response = await fetch('https://upscguidetest.onrender.com/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          fullName: formData.name,
-          mobile: formData.mobile,
-          email: formData.email,
-          preparationYears: formData.preparationYears,
-          message: formData.message
-        }),
+        body: JSON.stringify(submissionData),
       });
 
       if (response.ok) {
         toast.success('Thank you! Our mentorship coordinator will contact you within 24 hours.');
-        setFormData({ name: '', mobile: '', email: '', preparationYears: '', message: '' });
+        setFormData({ name: '', email: '', mobile: '', aspirantType: '', attemptedPrelims: '', currentCity: '' });
       } else {
-        throw new Error('Failed to submit form');
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Form submission error:', errorData);
+        throw new Error(errorData.error || 'Failed to submit form');
       }
     } catch (error) {
       toast.error('Error submitting form. Please try again later.');
@@ -107,18 +163,20 @@ const Hero = () => {
   ];
 
   return (
-    <section id="home" className="relative min-h-screen hero-bg-animated">
-      {/* Overlay for better text readability */}
-      <div className="absolute inset-0 bg-gradient-to-br from-navy/10 to-navy/5"></div>
+    <section 
+      id="home" 
+      ref={heroRef}
+      className="relative min-h-screen bg-white"
+    >
       
       <div className="relative z-10 container mx-auto px-4 py-12">
         {/* Main Hero Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          {/* Left Column - Content */}
+          {/* Left Column - Title, Trust Indicators, and Form */}
           <div className="space-y-8">
             {/* Main Title */}
             <div className="opacity-0 animate-slide-in-left">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-navy mb-4 text-shadow">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-navy mb-4 text-shadow premium-shine" data-text="One-to-One Mentorship Program for UPSC CSE 2026">
                 One-to-One Mentorship Program for UPSC CSE 2026
               </h1>
               <div className="w-24 h-1 bg-navy mb-6 animate-pulse-glow"></div>
@@ -127,10 +185,10 @@ const Hero = () => {
               </p>
             </div>
 
-            {/* Trust Indicators */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 opacity-0 animate-slide-in-left animate-delay-200">
+            {/* Trust Indicators - 2x2 Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-0 animate-slide-in-left animate-delay-200">
               <div className="flex items-center space-x-3 p-4 glass-effect rounded-lg">
-                <SearchCheck className="w-6 h-6 text-navy" />
+                <AnimatedSearchCheckIcon className="w-6 h-6 text-navy" />
                 <div>
                   <div className="font-semibold text-navy">5000+ Students</div>
                   <div className="text-sm text-text-black">Trusted By</div>
@@ -138,7 +196,7 @@ const Hero = () => {
               </div>
               
               <div className="flex items-center space-x-3 p-4 glass-effect rounded-lg">
-                <Wifi className="w-6 h-6 text-navy" />
+                <AnimatedWifiIcon className="w-6 h-6 text-navy" />
                 <div>
                   <div className="font-semibold text-navy">10,000+ Hours</div>
                   <div className="text-sm text-text-black">Sessions Conducted</div>
@@ -146,7 +204,7 @@ const Hero = () => {
               </div>
               
               <div className="flex items-center space-x-3 p-4 glass-effect rounded-lg">
-                <NotebookPen className="w-6 h-6 text-navy " />
+                <AnimatedNotebookPenIcon className="w-6 h-6 text-navy" />
                 <div>
                   <div className="font-semibold text-navy">50,000+</div>
                   <div className="text-sm text-text-black">Questions Attempted</div>
@@ -154,29 +212,151 @@ const Hero = () => {
               </div>
 
               <div className="flex items-center space-x-3 p-4 glass-effect rounded-lg">
-                <Trophy className="w-6 h-6 text-navy " />
+                <AnimatedTrophyIcon className="w-6 h-6 text-navy" />
                 <div>
                   <div className="font-semibold text-navy">50+</div>
                   <div className="text-sm text-text-black">Guest Lectures</div>
                 </div>
               </div>
-
             </div>
 
+            {/* Form under Trust Indicators */}
+            <div className="opacity-0 animate-slide-in-left animate-delay-400">
+              <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-card-hover border border-white/30">
+                <div className="text-center mb-6">
+                  <h2 className="text-2xl font-bold text-navy mb-2 shine-effect-heading">Fill Your Details for Free Guidance</h2>
+                  <p className="text-text-black font-medium">Our mentorship coordinator will reach out within 24 hours</p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="name" className="text-navy font-medium">Name *</Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      type="text"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      required
+                      className="border-gray-300 focus:border-orange focus:ring-orange"
+                      placeholder="Enter your name"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="text-navy font-medium">Email *</Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                      className="border-gray-300 focus:border-orange focus:ring-orange"
+                      placeholder="Enter your email address"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="mobile" className="text-navy font-medium">Contact No. *</Label>
+                    <div className="flex">
+                      <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                        +91
+                      </span>
+                      <Input
+                        id="mobile"
+                        name="mobile"
+                        type="tel"
+                        value={formData.mobile}
+                        onChange={handleInputChange}
+                        required
+                        className="rounded-l-none border-gray-300 focus:border-orange focus:ring-orange"
+                        placeholder="Enter contact number"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="aspirantType" className="text-navy font-medium">Type of Aspirant *</Label>
+                    <Select value={formData.aspirantType} onValueChange={(value) => setFormData(prev => ({ ...prev, aspirantType: value }))} required>
+                      <SelectTrigger className="border-gray-300 focus:border-orange focus:ring-orange">
+                        <SelectValue placeholder="Select aspirant type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="full-time">Full time preparation</SelectItem>
+                        <SelectItem value="college-student">College Student</SelectItem>
+                        <SelectItem value="working-professional">Working Professional</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="attemptedPrelims" className="text-navy font-medium">Ever Attempted UPSC Prelims Exam *</Label>
+                    <Select value={formData.attemptedPrelims} onValueChange={(value) => setFormData(prev => ({ ...prev, attemptedPrelims: value }))} required>
+                      <SelectTrigger className="border-gray-300 focus:border-orange focus:ring-orange">
+                        <SelectValue placeholder="Select option" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="yes">Yes</SelectItem>
+                        <SelectItem value="no">No</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="currentCity" className="text-navy font-medium">Current City *</Label>
+                    <Input
+                      id="currentCity"
+                      name="currentCity"
+                      type="text"
+                      value={formData.currentCity}
+                      onChange={handleInputChange}
+                      required
+                      className="border-gray-300 focus:border-orange focus:ring-orange"
+                      placeholder="Enter your current city"
+                    />
+                  </div>
+
+                  <GlowButton
+                    type="submit"
+                    disabled={isSubmitting}
+                    variant="default"
+                    glowIntensity="strong"
+                    glowColor="rgba(255, 255, 255, 0.8)"
+                    className="w-full bg-gradient-to-r from-navy to-secondary hover:from-secondary hover:to-navy text-white font-semibold py-3 px-6 rounded-lg shadow-button transition-all duration-300 group"
+                  >
+                    <span className="absolute inset-0 w-0 bg-white/20 group-hover:w-full transition-all duration-700 ease-out"></span>
+                    <span className="absolute inset-0 w-full h-full animate-pulse-glow"></span>
+                    <div className="flex items-center justify-center">
+                      {isSubmitting ? 'Submitting...' : 'Get Free Guidance'}
+                      <AnimatedArrowRightIcon className="w-5 h-5 ml-2" />
+                    </div>
+                  </GlowButton>
+
+                  <p className="text-xs text-gray-500 text-center">
+                    We respect your privacy. Your information is secure and will not be shared.
+                  </p>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - About Program and What You Get */}
+          <div className="space-y-8 opacity-0 animate-slide-in-right animate-delay-300">
             {/* Program Details */}
-            <div className="space-y-6 opacity-0 animate-slide-in-left animate-delay-400">
+            <div className="space-y-6">
               <div className="bg-white/20 backdrop-blur-sm rounded-lg p-6 border border-white/30">
-                <h2 className="text-2xl font-bold text-navy mb-4">About the Program</h2>
+                <h2 className="text-2xl font-bold text-navy mb-4 premium-shine">About the Program</h2>
                 <p className="text-text-black mb-4 font-medium">
                   Our Mentors have attempted <span className="text-navy font-semibold">UPSC Mains and Interviews</span> multiple times. They understand the exam pattern and can guide you with effective strategies.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex items-center space-x-2">
-                    <CheckCircle className="w-5 h-5 text-navy" />
+                    <AnimatedCheckCircleIcon className="w-5 h-5 text-navy" />
                     <span className="text-sm text-text-black font-medium">Duration: Till Mains (extended if qualified)</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <CheckCircle className="w-5 h-5 text-navy" />
+                    <AnimatedCheckCircleIcon className="w-5 h-5 text-navy" />
                     <span className="text-sm text-text-black font-medium">Mode: One-on-One via portal/Zoom</span>
                   </div>
                 </div>
@@ -184,131 +364,48 @@ const Hero = () => {
             </div>
 
             {/* What You Get */}
-            <div className="opacity-0 animate-slide-in-left animate-delay-600">
-              <h3 className="text-2xl font-bold text-navy mb-4">What You Get</h3>
+            <div>
+              <h3 className="text-2xl font-bold text-navy mb-4 premium-shine">What You Get</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {features.map((feature, index) => (
                   <div key={index} className="flex items-start space-x-2">
-                    <CheckCircle className="w-5 h-5 text-navy mt-0.5 flex-shrink-0" />
+                    <AnimatedCheckCircleIcon className="w-5 h-5 text-navy mt-0.5 flex-shrink-0" />
                     <span className="text-sm text-text-black font-medium">{feature}</span>
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
-
-          {/* Right Column - Form */}
-          <div className="opacity-0 animate-slide-in-right animate-delay-300">
-            <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-card-hover border border-white/30">
-              <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold text-navy mb-2">Fill Your Details for Free Guidance</h2>
-                <p className="text-text-black font-medium">Our mentorship coordinator will reach out within 24 hours</p>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="name" className="text-navy font-medium">Full Name *</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    type="text"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    required
-                    className="border-gray-300 focus:border-orange focus:ring-orange"
-                    placeholder="Enter your full name"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="mobile" className="text-navy font-medium">Mobile Number *</Label>
-                  <div className="flex">
-                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
-                      +91
-                    </span>
-                    <Input
-                      id="mobile"
-                      name="mobile"
-                      type="tel"
-                      value={formData.mobile}
-                      onChange={handleInputChange}
-                      required
-                      className="rounded-l-none border-gray-300 focus:border-orange focus:ring-orange"
-                      placeholder="Enter mobile number"
+              
+              {/* Student Results Section */}
+              <div className="mt-8">
+                <h3 className="text-2xl font-bold text-navy mb-4 premium-shine">Student Results</h3>
+                <div className="flex justify-center">
+                  <div className="relative max-w-2xl">
+                    {/* Creative border styling */}
+                    <div className="absolute inset-0 border-8 border-double border-yellow-500 transform rotate-1 rounded-lg"></div>
+                    <div className="absolute inset-0 border-4 border-blue-600 transform -rotate-1 rounded-lg"></div>
+                    
+                    {/* Poster image */}
+                    <img 
+                      src="/Result.jpg" 
+                      alt="Student Results Poster" 
+                      className="relative z-10 rounded-lg shadow-xl"
                     />
+                    
+                    {/* Decorative elements */}
+                    <div className="absolute -top-4 -left-4 w-12 h-12 bg-red-500 rounded-full z-0 opacity-70"></div>
+                    <div className="absolute -bottom-4 -right-4 w-12 h-12 bg-green-500 rounded-full z-0 opacity-70"></div>
                   </div>
                 </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-navy font-medium">Email Address *</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                    className="border-gray-300 focus:border-orange focus:ring-orange"
-                    placeholder="Enter your email address"
-                  />
-                </div>
-
-                
-
-                <div className="space-y-2">
-                  <Label htmlFor="preparationYears" className="text-navy font-medium">How many years are you preparing?</Label>
-                  <Select value={formData.preparationYears} onValueChange={(value) => setFormData(prev => ({ ...prev, preparationYears: value }))}>
-                    <SelectTrigger className="border-gray-300 focus:border-orange focus:ring-orange">
-                      <SelectValue placeholder="Select preparation duration" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="less-than-1">Less than 1 year</SelectItem>
-                      <SelectItem value="1-year">1 year</SelectItem>
-                      <SelectItem value="2-years">2 years</SelectItem>
-                      <SelectItem value="3-years">3 years</SelectItem>
-                      <SelectItem value="more-than-3">More than 3 years</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="message" className="text-navy font-medium">Message (Optional)</Label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    rows={3}
-                    className="border-gray-300 focus:border-orange focus:ring-orange"
-                    placeholder="Any specific questions or requirements?"
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-gradient-to-r from-navy to-secondary hover:from-secondary hover:to-navy text-white font-semibold py-3 px-6 rounded-lg shadow-button transition-all duration-300 relative overflow-hidden group"
-                >
-                  <span className="absolute inset-0 w-0 bg-white/20 group-hover:w-full transition-all duration-700 ease-out"></span>
-                  <span className="absolute inset-0 w-full h-full animate-pulse-glow"></span>
-                  <span className="relative z-10">{isSubmitting ? 'Submitting...' : 'Get Free Guidance'}</span>
-                  <ArrowRight className="w-5 h-5 ml-2 relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
-                </Button>
-
-                <p className="text-xs text-gray-500 text-center">
-                  We respect your privacy. Your information is secure and will not be shared.
-                </p>
-              </form>
+              </div>
             </div>
-
-            
-            
           </div>
         </div>
 
         {/* Phase-wise Journey */}
         <div className="mt-16 opacity-0 animate-float-up animate-delay-800">
-          <h2 className="text-3xl font-bold text-navy text-center mb-12">Phase-wise Journey of the Mentorship</h2>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-navy inline-block premium-shine">Phase-wise Journey of the Mentorship</h2>
+          </div>
           
           {/* Zigzag Timeline Container */}
           <div className="relative max-w-4xl mx-auto">
@@ -398,32 +495,30 @@ const Hero = () => {
           </div>
         </div>
 
-       
-
         {/* Contact Info */}
         <div className="mt-16 opacity-0 animate-float-up animate-delay-1200">
           <div className="bg-white/20 backdrop-blur-sm rounded-lg p-8 border border-white/30 text-center">
-            <h2 className="text-2xl font-bold text-navy mb-6">Ready to Begin?</h2>
+            <h2 className="text-2xl font-bold text-navy mb-6 shine-effect-heading">Ready to Begin?</h2>
             <p className="text-text-black mb-8 font-medium">
               If you're preparing for UPSC CSE, connect with our experienced mentors who can guide you through the process.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="flex items-center justify-center space-x-3">
-                <Phone className="w-6 h-6 text-navy" />
+                <AnimatedPhoneIcon className="w-6 h-6 text-navy" />
                 <div>
                   <div className="font-semibold text-navy">+91-788 788 8819</div>
                   <div className="text-sm text-text-black font-medium">Call us now</div>
                 </div>
               </div>
               <div className="flex items-center justify-center space-x-3">
-                <Globe className="w-6 h-6 text-navy" />
+                <AnimatedGlobeIcon className="w-6 h-6 text-navy" />
                 <div>
                   <div className="font-semibold text-navy">www.upscguide.com</div>
                   <div className="text-sm text-text-black font-medium">Visit our website</div>
                 </div>
               </div>
               <div className="flex items-center justify-center space-x-3">
-                <MapPin className="w-6 h-6 text-navy" />
+                <AnimatedMapPinIcon className="w-6 h-6 text-navy" />
                 <div>
                   <div className="font-semibold text-navy">Near Jnana Probodhini</div>
                   <div className="text-sm text-text-black font-medium">Sadashiv Peth, Pune</div>

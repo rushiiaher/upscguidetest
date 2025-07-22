@@ -9,9 +9,17 @@ const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 
-app.use(cors({
-  origin: ['https://upscguide.netlify.app', 'http://localhost:8080'],
-  credentials: true,
+app.use(cors());
+
+// More detailed CORS for specific routes if needed
+app.use('/api/contact', cors({
+  origin: '*',
+  methods: ['POST'],
+  allowedHeaders: ['Content-Type']
+}));
+
+app.use('/api/admin', cors({
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -28,12 +36,30 @@ const connectWithRetry = async () => {
 
 connectWithRetry();
 
+// Health check endpoint
+app.get('/', (req, res) => {
+  res.status(200).json({ status: 'ok', message: 'Server is running' });
+});
+
 app.post('/api/contact', async (req, res) => {
   try {
-    const contact = new Contact(req.body);
+    console.log('Received form data:', req.body);
+    
+    // Ensure all required fields have at least default values
+    const contactData = {
+      fullName: req.body.fullName || '',
+      email: req.body.email || '',
+      mobile: req.body.mobile || '',
+      aspirantType: req.body.aspirantType || 'full-time',
+      attemptedPrelims: req.body.attemptedPrelims || 'no',
+      currentCity: req.body.currentCity || ''
+    };
+    
+    const contact = new Contact(contactData);
     await contact.save();
     res.status(201).json({ message: 'Form submitted successfully' });
   } catch (error) {
+    console.error('Form submission error:', error.message);
     res.status(400).json({ error: error.message });
   }
 });

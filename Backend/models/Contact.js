@@ -6,24 +6,32 @@ const contactSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  mobile: {
-    type: String,
-    required: true,
-    trim: true
-  },
   email: {
     type: String,
     required: true,
     trim: true,
     lowercase: true
   },
-  preparationYears: {
+  mobile: {
     type: String,
     required: true,
-    enum: ['less-than-1', '1-year', '2-years', '3-years', 'more-than-3']
+    trim: true
   },
-  message: {
+  aspirantType: {
     type: String,
+    required: false,
+    default: 'full-time',
+    enum: ['full-time', 'college-student', 'working-professional']
+  },
+  attemptedPrelims: {
+    type: String,
+    required: false,
+    default: 'no',
+    enum: ['yes', 'no']
+  },
+  currentCity: {
+    type: String,
+    required: true,
     trim: true
   },
   submittedAt: {

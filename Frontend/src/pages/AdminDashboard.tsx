@@ -5,10 +5,11 @@ import * as XLSX from 'xlsx';
 interface ContactData {
   _id: string;
   fullName: string;
-  mobile: string;
   email: string;
-  preparationYears: string;
-  message: string;
+  mobile: string;
+  aspirantType: string;
+  attemptedPrelims: string;
+  currentCity: string;
   submittedAt: string;
 }
 
@@ -21,7 +22,8 @@ const AdminDashboard = () => {
   
   // Filter states
   const [filters, setFilters] = useState({
-    preparationYears: '',
+    aspirantType: '',
+    attemptedPrelims: '',
     dateFrom: '',
     dateTo: '',
     searchQuery: '',
@@ -77,9 +79,14 @@ const AdminDashboard = () => {
   const applyFilters = () => {
     let result = [...contacts];
     
-    // Filter by preparation years
-    if (filters.preparationYears) {
-      result = result.filter(contact => contact.preparationYears === filters.preparationYears);
+    // Filter by aspirant type
+    if (filters.aspirantType) {
+      result = result.filter(contact => contact.aspirantType === filters.aspirantType);
+    }
+    
+    // Filter by attempted prelims
+    if (filters.attemptedPrelims) {
+      result = result.filter(contact => contact.attemptedPrelims === filters.attemptedPrelims);
     }
     
     // Filter by date range
@@ -109,7 +116,8 @@ const AdminDashboard = () => {
 
   const resetFilters = () => {
     setFilters({
-      preparationYears: '',
+      aspirantType: '',
+      attemptedPrelims: '',
       dateFrom: '',
       dateTo: '',
       searchQuery: '',
@@ -157,19 +165,31 @@ const AdminDashboard = () => {
 
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Preparation Years</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Aspirant Type</label>
               <select
-                name="preparationYears"
-                value={filters.preparationYears}
+                name="aspirantType"
+                value={filters.aspirantType}
                 onChange={handleFilterChange}
                 className="w-full border border-gray-300 rounded-md p-2 text-sm"
               >
-                <option value="">All Years</option>
-                <option value="less-than-1">Less than 1 year</option>
-                <option value="1-year">1 year</option>
-                <option value="2-years">2 years</option>
-                <option value="3-years">3 years</option>
-                <option value="more-than-3">More than 3 years</option>
+                <option value="">All Types</option>
+                <option value="full-time">Full-time preparation</option>
+                <option value="college-student">College Student</option>
+                <option value="working-professional">Working Professional</option>
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Attempted Prelims</label>
+              <select
+                name="attemptedPrelims"
+                value={filters.attemptedPrelims}
+                onChange={handleFilterChange}
+                className="w-full border border-gray-300 rounded-md p-2 text-sm"
+              >
+                <option value="">All</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
               </select>
             </div>
             
@@ -247,9 +267,11 @@ const AdminDashboard = () => {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mobile</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prep Years</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact No.</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aspirant Type</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attempted Prelims</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Current City</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                   </tr>
                 </thead>
@@ -257,20 +279,23 @@ const AdminDashboard = () => {
                   {filteredContacts.map((contact) => (
                     <tr key={contact._id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{contact.fullName}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{contact.mobile}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{contact.email}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{contact.mobile}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {contact.preparationYears === 'less-than-1' && 'Less than 1 year'}
-                        {contact.preparationYears === '1-year' && '1 year'}
-                        {contact.preparationYears === '2-years' && '2 years'}
-                        {contact.preparationYears === '3-years' && '3 years'}
-                        {contact.preparationYears === 'more-than-3' && 'More than 3 years'}
+                        {contact.aspirantType === 'full-time' && 'Full time preparation'}
+                        {contact.aspirantType === 'college-student' && 'College Student'}
+                        {contact.aspirantType === 'working-professional' && 'Working Professional'}
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {contact.attemptedPrelims === 'yes' ? 'Yes' : 'No'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{contact.currentCity}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {new Date(contact.submittedAt).toLocaleDateString()}
                       </td>
                     </tr>
                   ))}
+                
                 </tbody>
               </table>
             </div>

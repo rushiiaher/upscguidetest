@@ -217,6 +217,58 @@
   }
 }
 
+@keyframes shine-effect {
+  0% {
+    background-position: -200%;
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.1;
+  }
+  20% {
+    opacity: 0.5;
+  }
+  35% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  65% {
+    opacity: 0.3;
+  }
+  80% {
+    opacity: 0.1;
+  }
+  100% {
+    background-position: 200%;
+    opacity: 0;
+  }
+}
+
+/* Navigation Styles */
+@layer components {
+  .nav-link {
+    @apply rounded-md font-medium transition-all duration-300 ease-in-out transform hover:scale-105;
+  }
+  
+  .nav-link span {
+    @apply transition-all duration-300;
+  }
+  
+  .mobile-nav-link {
+    @apply block w-full transition-all duration-300 rounded-md;
+  }
+  
+  .mobile-nav-link:hover span:first-child {
+    @apply text-navy;
+  }
+  
+  .mobile-nav-link:hover span:last-child {
+    @apply w-full;
+  }
+}
+
 /* Custom utility classes */
 @layer utilities {
   .animate-delay-100 {
@@ -273,10 +325,60 @@
   
   .hero-bg-animated {
     background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAIAAACRXR/mAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAABnSURBVHja7M5RDYAwDEXRDgmvEocnlrQS2SwUFST9uEfBGWs9c97nbGtDcquqiKhOImLs/UpuzVzWEi1atGjRokWLFi1atGjRokWLFi1atGjRokWLFi1af7Ukz8xWp8z8AAAA//8DAJ4LoEAAlL1nAAAAAElFTkSuQmCC") repeat 0 0;
-    -webkit-animation: bg-scrolling-reverse 0.92s infinite linear;
-    -moz-animation: bg-scrolling-reverse 0.92s infinite linear;
-    -o-animation: bg-scrolling-reverse 0.92s infinite linear;
-    animation: bg-scrolling-reverse 0.92s infinite linear;
+    transition: all 0.8s ease;
+    position: relative;
+    background-attachment: fixed;
+  }
+  
+  .hero-bg-scroll-effect {
+    animation: bg-light-pulse 2.5s ease-in-out;
+    position: relative;
+  }
+  
+  .hero-bg-scroll-effect::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+    opacity: 0;
+    animation: radial-pulse 2.5s ease-in-out;
+    pointer-events: none;
+  }
+  
+  @keyframes bg-light-pulse {
+    0% {
+      background-color: rgba(255, 255, 255, 0);
+    }
+    30% {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    70% {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    100% {
+      background-color: rgba(255, 255, 255, 0);
+    }
+  }
+  
+  @keyframes radial-pulse {
+    0% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    30% {
+      opacity: 1;
+    }
+    70% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1.1);
+    }
   }
   
   .gradient-hero {
@@ -311,5 +413,127 @@
   
   .text-shadow {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .shine-effect {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+  
+  .shine-effect::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      60deg,
+      rgba(255, 255, 255, 0) 20%,
+      rgba(255, 255, 255, 0.1) 30%,
+      rgba(255, 255, 255, 0.8) 50%,
+      rgba(255, 255, 255, 0.1) 70%,
+      rgba(255, 255, 255, 0) 80%
+    );
+    background-size: 200% 200%;
+    animation: shine-effect 4s infinite ease-out;
+    pointer-events: none;
+    transform: rotate(30deg);
+    z-index: -1;
+    mix-blend-mode: overlay;
+  }
+  
+  .shine-effect-heading {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    z-index: 1;
+  }
+  
+  .shine-effect-heading::after {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    width: 300%;
+    height: 300%;
+    background: linear-gradient(
+      60deg,
+      rgba(255, 255, 255, 0) 20%,
+      rgba(255, 255, 255, 0.1) 30%,
+      rgba(255, 255, 255, 0.8) 50%,
+      rgba(255, 255, 255, 0.1) 70%,
+      rgba(255, 255, 255, 0) 80%
+    );
+    background-size: 200% 200%;
+    animation: shine-effect 5s infinite ease-out;
+    pointer-events: none;
+    transform: rotate(30deg);
+    z-index: -1;
+    mix-blend-mode: overlay;
+  }
+  
+  /* Text-only shine effect */
+  .premium-shine {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+  }
+  
+  .premium-shine::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.8) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    transform: skewX(-25deg);
+    animation: text-shine 3s infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  @keyframes text-shine {
+    0% {
+      left: -75%;
+      opacity: 0;
+    }
+    20% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      left: 125%;
+      opacity: 0;
+    }
+  }
+  
+  @keyframes pulse-shine {
+    0%, 100% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes rotate-shine {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 }
